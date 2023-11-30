@@ -117,9 +117,7 @@ class SimpleMapInstruction {
     List jsonPaths = json['i'];
 
     for (int i = 0; i < jsonPaths.length; i++) {
-      if (jsonPaths[i]) {
-        paths.add(jsonPaths[i]);
-      }
+      paths.add(jsonPaths[i]);
     }
 
     return SimpleMapInstruction(
