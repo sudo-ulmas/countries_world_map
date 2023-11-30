@@ -36,7 +36,9 @@ class SimpleMapPainter extends CustomPainter {
     // List countryPaths = json.decode(jsonData);
     List<SimpleMapInstruction> countryPathList = <SimpleMapInstruction>[];
     for (var path in instructions) {
-      countryPathList.add(SimpleMapInstruction.fromJson(path));
+      if (path['u'] == 'uz') {
+        countryPathList.add(SimpleMapInstruction.fromJson(path));
+      }
     }
 
     // Draw paths
@@ -115,14 +117,12 @@ class SimpleMapInstruction {
     List jsonPaths = json['i'];
 
     for (int i = 0; i < jsonPaths.length; i++) {
-    if (jsonPaths[i]['u'] == 'uz') {
-      paths.add(jsonPaths[i]);
-    }
+      if (jsonPaths[i]) {
+        paths.add(jsonPaths[i]);
+      }
     }
 
     return SimpleMapInstruction(
         uniqueID: json['u'], name: json['n'], instructions: paths);
   }
 }
-
-
