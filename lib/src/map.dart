@@ -57,7 +57,7 @@ class SimpleMap extends StatelessWidget {
                         context: context,
                         instructions: instruction,
                         callback: (id, name, tapdetails) {
-                          if (!excludedCountries.contains(id)) {
+                          if (countriesOfInterest.contains(id)) {
                             if (callback != null) {
                               print('$id $name $tapdetails');
                               callback!(id, name, tapdetails);
@@ -81,3 +81,15 @@ class CountryBorder {
     this.width = 1,
   });
 }
+
+final countriesOfInterest = [
+  'at',
+  'bd',
+  'cn',
+  'cy',
+  'cz',
+  'cn',
+  'ae',
+  'nl',
+  'uz'
+];
