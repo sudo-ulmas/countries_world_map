@@ -57,8 +57,11 @@ class SimpleMap extends StatelessWidget {
                         context: context,
                         instructions: instruction,
                         callback: (id, name, tapdetails) {
-                          if (callback != null) {
-                            callback!(id, name, tapdetails);
+                          if (!excludedCountries.contains(id)) {
+                            if (callback != null) {
+                              print('$id $name $tapdetails');
+                              callback!(id, name, tapdetails);
+                            }
                           }
                         },
                         countryBorder: countryBorder,
