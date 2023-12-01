@@ -126,7 +126,7 @@ class SimpleMapInstruction {
 }
 
 final excludedCountries = [
-// Africa
+  // Africa
   'dz', 'ao', 'bj', 'bw', 'bf', 'bi', 'cv', 'cm', 'cf', 'td', 'km', 'cd', 'cg',
   'dj', 'gq', 'er', 'sz', 'et', 'ga', 'gm', 'gh', 'gn', 'gw', 'ci', 'ke',
   'ls', 'lr', 'ly', 'mg', 'mw', 'ml', 'mr', 'mu', 'ma', 'mz', 'na', 'ne', 'ng',
@@ -139,11 +139,13 @@ final excludedCountries = [
   // Australia
   'au',
   // Oceania (Excluding Asia)
-  'fj', 'ki', 'mh', 'fm', 'nr', 'pw', 'pg', 'ws', 'sb', 'to', 'tv', 'vu', 'nz',
-  'tl',
+  'fj', 'ki', 'mh', 'fm', 'nr', 'pw', 'pg', 'ws', 'sb', 'to', 'tv', 'vu', 'tl',
   // Islands and territories (Excluding Europe and Asia)
   'ai', 'ag', 'aw', 'bs', 'bb', 'bq', 'ky', 'cw', 'dm', 'do', 'gd', 'gp', 'ht',
   'jm', 'ms', 'mq', 'bl', 'kn', 'lc', 'mf', 'vc', 'sx', 'tt', 'tc', 'vg', 'vi',
-  'bm', 'io', 'fk', 'gf', 'tf', 'gi', 'gl', 'gp', 'mq', 'yt', 'nc', 're', 'sh',
-  'pm', 'wf',
+  'bm', 'io', 'fk', 'gf', 'tf', 'gi', 'gp', 'mq', 'yt', 'nc', 're', 'sh', 'pm',
+  'wf',
+  // Excluding specific territories
+  'gl',
+  'nz', 'eh', 'no',
 ];
