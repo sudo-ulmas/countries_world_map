@@ -147,5 +147,5 @@ final excludedCountries = [
   'wf',
   // Excluding specific territories
   'gl',
-  'nz', 'eh', 'no',
+  'nz', 'eh', 'no', 'is', 'sj'
 ];
