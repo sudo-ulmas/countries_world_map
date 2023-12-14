@@ -46,39 +46,53 @@ class SimpleMapPainter extends CustomPainter {
       List<String> paths = countryPathList[i].instructions;
       Path path = Path();
 
-      // Read path instructions and start drawing
-      for (int j = 0; j < paths.length; j++) {
-        String instruction = paths[j];
-        if (instruction == "c") {
-          path.close();
-        } else {
-          List<String> coordinates = instruction.substring(1).split(',');
-          double x = double.parse(coordinates[0]);
-          double y = double.parse(coordinates[1]);
+      if (countryPathList[i].name == 'Eriell') {
+        Paint paint = Paint()..color = Colors.blue;
+        c.drawCircle(
+            Offset(
+              double.parse(paths.first.split(',').first),
+              double.parse(
+                paths.first.split(',').last,
+              ),
+            ),
+            1,
+            paint);
+      } else {
+        for (int j = 0; j < paths.length; j++) {
+          String instruction = paths[j];
+          if (instruction == "c") {
+            path.close();
+          } else {
+            List<String> coordinates = instruction.substring(1).split(',');
+            double x = double.parse(coordinates[0]);
+            double y = double.parse(coordinates[1]);
 
-          if (instruction[0] == 'm') path.moveTo(s.width * x, s.height * y);
-          if (instruction[0] == 'l') path.lineTo(s.width * x, s.height * y);
+            if (instruction[0] == 'm') path.moveTo(s.width * x, s.height * y);
+            if (instruction[0] == 'l') path.lineTo(s.width * x, s.height * y);
+          }
+        }
+
+        final onTapUp = (tabdetail) => callback(
+              countryPathList[i].uniqueID,
+              countryPathList[i].name,
+              tabdetail,
+            );
+
+        // Draw country body
+        String uniqueID = countryPathList[i].uniqueID;
+        Paint paint = Paint()..color = colors?[uniqueID] ?? defaultColor;
+        canvas.drawPath(path, paint, onTapUp: onTapUp);
+
+        // Draw country border
+        if (countryBorder != null) {
+          paint.color = countryBorder!.color;
+          paint.strokeWidth = countryBorder!.width;
+          paint.style = PaintingStyle.stroke;
+          canvas.drawPath(path, paint, onTapUp: onTapUp);
         }
       }
 
-      final onTapUp = (tabdetail) => callback(
-            countryPathList[i].uniqueID,
-            countryPathList[i].name,
-            tabdetail,
-          );
-
-      // Draw country body
-      String uniqueID = countryPathList[i].uniqueID;
-      Paint paint = Paint()..color = colors?[uniqueID] ?? defaultColor;
-      canvas.drawPath(path, paint, onTapUp: onTapUp);
-
-      // Draw country border
-      if (countryBorder != null) {
-        paint.color = countryBorder!.color;
-        paint.strokeWidth = countryBorder!.width;
-        paint.style = PaintingStyle.stroke;
-        canvas.drawPath(path, paint, onTapUp: onTapUp);
-      }
+      // Read path instructions and start drawing
     }
   }
 
@@ -148,5 +162,6 @@ final excludedCountries = [
   // Excluding specific territories
   'gl',
   'nz', 'eh', 'no', 'is', 'sj',
-  "my", "id", "ph", "sg", "th", "vn", "bn", "tl", "fj", "pg", "ki", "mh", "fm", "ws", "sb",
+  "my", "id", "ph", "sg", "th", "vn", "bn", "tl", "fj", "pg", "ki", "mh", "fm",
+  "ws", "sb",
 ];
