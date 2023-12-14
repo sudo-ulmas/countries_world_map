@@ -50,10 +50,8 @@ class SimpleMapPainter extends CustomPainter {
         Paint paint = Paint()..color = Colors.blue;
         c.drawCircle(
             Offset(
-              double.parse(paths.first.split(',').first),
-              double.parse(
-                paths.first.split(',').last,
-              ),
+              paths.first.split(',').first as double,
+              paths.first.split(',').last as double,
             ),
             1,
             paint);
