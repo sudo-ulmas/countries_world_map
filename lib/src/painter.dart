@@ -46,14 +46,16 @@ class SimpleMapPainter extends CustomPainter {
       List<String> paths = countryPathList[i].instructions;
       Path path = Path();
 
-      if (countryPathList[i].name == 'Eriell') {
-        Paint paint = Paint()..color = Colors.blue;
+      if (countryPathList[i].name == 'Eriell' ||
+          countryPathList[i].uniqueID == 'UZ-ER') {
+        print('prolong');
+        Paint paint = Paint()..color = Colors.black;
         c.drawCircle(
             Offset(s.width * 0.5156, s.height * 0.7699
                 // paths.first.split(',').first as double,
                 // paths.first.split(',').last as double,
                 ),
-            1,
+            10,
             paint);
       } else {
         for (int j = 0; j < paths.length; j++) {
