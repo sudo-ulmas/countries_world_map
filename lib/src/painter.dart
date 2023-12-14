@@ -51,11 +51,11 @@ class SimpleMapPainter extends CustomPainter {
         print('prolong');
         Paint paint = Paint()..color = Colors.black;
         c.drawCircle(
-            Offset(s.width * 0.5156, s.height * 0.7699
-                // paths.first.split(',').first as double,
-                // paths.first.split(',').last as double,
-                ),
-            10,
+            Offset(
+              s.width * double.parse(paths.first.split(',').first),
+              s.height * double.parse(paths.first.split(',').last),
+            ),
+            1,
             paint);
       } else {
         for (int j = 0; j < paths.length; j++) {
