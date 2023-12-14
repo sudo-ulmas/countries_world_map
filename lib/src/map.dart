@@ -8,6 +8,9 @@ import 'painter.dart';
 /// This is the main widget that will paint the map based on the given insturctions (json).
 class SimpleMap extends StatelessWidget {
   final String instructions;
+  final Widget icon;
+  final double x;
+  final double y;
 
   final CountryBorder? countryBorder;
 
@@ -35,6 +38,9 @@ class SimpleMap extends StatelessWidget {
     this.fit,
     this.countryBorder,
     Key? key,
+    required this.icon,
+    required this.x,
+    required this.y,
   }) : super(key: key);
 
   @override
@@ -49,25 +55,35 @@ class SimpleMap extends StatelessWidget {
     return FittedBox(
       fit: fit ?? BoxFit.contain,
       child: RepaintBoundary(
-          child: CanvasTouchDetector(
-              builder: (context) => CustomPaint(
-                    isComplex: true,
-                    size: Size(width, height),
-                    painter: SimpleMapPainter(
-                        context: context,
-                        instructions: instruction,
-                        callback: (id, name, tapdetails) {
-                          if (countriesOfInterest.contains(id)) {
-                            if (callback != null) {
-                              print('$id $name $tapdetails');
-                              callback!(id, name, tapdetails);
-                            }
-                          }
-                        },
-                        countryBorder: countryBorder,
-                        colors: colors,
-                        defaultColor: defaultColor ?? Colors.grey),
-                  ))),
+          child: Stack(
+        children: [
+          CanvasTouchDetector(
+            builder: (context) => CustomPaint(
+              isComplex: true,
+              size: Size(width, height),
+              painter: SimpleMapPainter(
+                  context: context,
+                  instructions: instruction,
+                  callback: (id, name, tapdetails) {
+                    if (countriesOfInterest.contains(id)) {
+                      if (callback != null) {
+                        print('$id $name $tapdetails');
+                        callback!(id, name, tapdetails);
+                      }
+                    }
+                  },
+                  countryBorder: countryBorder,
+                  colors: colors,
+                  defaultColor: defaultColor ?? Colors.grey),
+            ),
+          ),
+          Positioned(
+            top: y,
+            left: x,
+            child: icon,
+          ),
+        ],
+      )),
     );
   }
 }
