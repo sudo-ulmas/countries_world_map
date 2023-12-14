@@ -49,10 +49,10 @@ class SimpleMapPainter extends CustomPainter {
       if (countryPathList[i].name == 'Eriell') {
         Paint paint = Paint()..color = Colors.blue;
         c.drawCircle(
-            Offset(
-              paths.first.split(',').first as double,
-              paths.first.split(',').last as double,
-            ),
+            Offset(s.width * 0.5156, s.height * 0.7699
+                // paths.first.split(',').first as double,
+                // paths.first.split(',').last as double,
+                ),
             1,
             paint);
       } else {
