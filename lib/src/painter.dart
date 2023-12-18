@@ -51,9 +51,15 @@ class SimpleMapPainter extends CustomPainter {
           countryPathList[i].uniqueID == 'UZ-ER') {
         print('prolong');
         Paint paint = Paint()..color = Colors.black;
+        path.moveTo(
+          s.width * double.parse(paths.first.split(',').first),
+          s.height * double.parse(paths.first.split(',').last),
+        );
         final Path complexPathToDraw = parseSvgPathData(
-            "M8.70711 0.292893C8.31658 -0.097631 7.68342 -0.097631 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 2V1L7 1V2L9 2Z");
-        c.drawPath(complexPathToDraw, Paint());
+            //"""M8.70711 0.292893C8.31658
+            """-0.097631 7.68342 -0.097631 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 2V1L7 1V2L9 2Z""");
+        path.addPath(complexPathToDraw, Offset.zero);
+        c.drawPath(path, Paint());
         // c.drawCircle(
         //     Offset(
         //       s.width * double.parse(paths.first.split(',').first),
