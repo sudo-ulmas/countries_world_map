@@ -304,6 +304,7 @@ class _RandomWorldMapGeneratorState extends State<RandomWorldMapGenerator> {
                         zM: colors[_random.nextInt(8)],
                         zW: colors[_random.nextInt(8)],
                       ).toMap(),
+                      coordinates: [],
                     ),
                   ),
                   // Creates 8% from right side so the map looks more centered.

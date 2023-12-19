@@ -8,6 +8,7 @@ import 'painter.dart';
 /// This is the main widget that will paint the map based on the given insturctions (json).
 class SimpleMap extends StatelessWidget {
   final String instructions;
+  final List<String> coordinates;
 
   final CountryBorder? countryBorder;
 
@@ -35,6 +36,7 @@ class SimpleMap extends StatelessWidget {
     this.fit,
     this.countryBorder,
     Key? key,
+    required this.coordinates,
   }) : super(key: key);
 
   @override
@@ -43,6 +45,22 @@ class SimpleMap extends StatelessWidget {
 
     double width = double.parse(map['w'].toString());
     double height = double.parse(map['h'].toString());
+    final startingAndEndingCoordinates = map['g'] as Map<String, dynamic>?;
+    double startLat = 0;
+    double startLon = 0;
+    double endLat = 0;
+    double endLon = 0;
+    if (startingAndEndingCoordinates != null &&
+        startingAndEndingCoordinates['a'].isNotEmpty) {
+      startLat = double.parse(
+          (startingAndEndingCoordinates)['a'].toString().split(',').last);
+      startLon = double.parse(
+          (startingAndEndingCoordinates)['a'].toString().split(',').first);
+      endLat = double.parse(
+          (startingAndEndingCoordinates)['b'].toString().split(',').last);
+      endLon = double.parse(
+          (startingAndEndingCoordinates)['b'].toString().split(',').first);
+    }
     List<Map<String, dynamic>> instruction =
         List<Map<String, dynamic>>.from(map['i']);
 
@@ -54,6 +72,7 @@ class SimpleMap extends StatelessWidget {
           isComplex: true,
           size: Size(width, height),
           painter: SimpleMapPainter(
+            coordinates: coordinates,
             context: context,
             instructions: instruction,
             callback: (id, name, tapdetails) {
@@ -67,6 +86,10 @@ class SimpleMap extends StatelessWidget {
             countryBorder: countryBorder,
             colors: colors,
             defaultColor: defaultColor ?? Colors.grey,
+            startLat: startLat,
+            startLon: startLon,
+            endLat: endLat,
+            endLon: endLon,
           ),
         ),
       )),

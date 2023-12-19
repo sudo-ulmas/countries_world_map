@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import '../components/canvas/touchy_canvas.dart';
 import '../countries_world_map.dart';
 import 'package:path_drawing/path_drawing.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 
 /// This painter will paint a world map with all///
 /// Giving countries a different color based on a data set can help visualize data.
 
 class SimpleMapPainter extends CustomPainter {
   final List<Map<String, dynamic>> instructions;
+  final double startLat, endLat, startLon, endLon;
+  final List<String> coordinates;
 
   /// This Color is used for all the countries that have no custom color
   final Color defaultColor;
@@ -26,7 +30,12 @@ class SimpleMapPainter extends CustomPainter {
     this.colors,
     required this.context,
     required this.callback,
+    this.startLat = 0,
+    this.startLon = 0,
+    this.endLat = 0,
+    this.endLon = 0,
     this.countryBorder,
+    required this.coordinates,
   });
 
   @override
@@ -46,27 +55,30 @@ class SimpleMapPainter extends CustomPainter {
     for (int i = 0; i < countryPathList.length; i++) {
       List<String> paths = countryPathList[i].instructions;
       Path path = Path();
-
       if (countryPathList[i].name == 'Eriell' ||
           countryPathList[i].uniqueID == 'UZ-ER') {
-        print('prolong');
-        Paint paint = Paint()..color = Colors.black;
-        path.moveTo(
-          s.width * double.parse(paths.first.split(',').first),
-          s.height * double.parse(paths.first.split(',').last),
-        );
-        final Path complexPathToDraw = parseSvgPathData(
-            //"""M8.70711 0.292893C8.31658
-            """-0.097631 7.68342 -0.097631 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 2V1L7 1V2L9 2Z""");
-        path.addPath(complexPathToDraw, Offset.zero);
-        c.drawPath(path, Paint());
-        // c.drawCircle(
-        //     Offset(
-        //       s.width * double.parse(paths.first.split(',').first),
-        //       s.height * double.parse(paths.first.split(',').last),
-        //     ),
-        //     1,
-        //     paint);
+        Paint paint = Paint()..color = Color(0xff1B3470);
+        final String rawSvg = '''
+M14,0 C21.732,0 28,5.641 28,12.6 C28,23.963 14,36 14,36 C14,36 0,24.064 0,12.6 C0,5.641 6.268,0 14,0 Z
+''';
+        for (var i = 0; i < coordinates.length; i += 1) {
+          final latitude = double.parse(coordinates[i].split(',').first);
+          final longitude = double.parse(coordinates[i].split(',').last);
+          final relativeLat = (latitude - startLat) / (endLat - startLat);
+          final relativeLon = (longitude - startLon) / (endLon - startLon);
+          final Path complexPathToDraw = parseSvgPathData(rawSvg);
+          path.addPath(complexPathToDraw, Offset.zero);
+          c.save();
+          c.translate(
+            s.width * relativeLon,
+            s.height * relativeLat,
+          );
+          c.scale(0.2);
+          // c.translate(0, 0);
+          c.drawPath(complexPathToDraw, paint);
+          c.drawCircle(Offset(14, 14), 7, Paint()..color = Color(0xffE1B506));
+          c.restore();
+        }
       } else {
         for (int j = 0; j < paths.length; j++) {
           String instruction = paths[j];

@@ -174,6 +174,7 @@ class _SupportedCountriesMapState extends State<SupportedCountriesMap> {
                       uZ: Colors.green,
                       yE: Colors.green,
                     ).toMap(),
+                    coordinates: [],
                   ),
                 ),
                 // Creates 8% from right side so the map looks more centered.
@@ -277,6 +278,7 @@ class _CountryPageState extends State<CountryPage> {
                               properties[i]['color'];
                         });
                       },
+                      coordinates: [],
                     ))),
                     if (MediaQuery.of(context).size.width > 800)
                       SizedBox(
