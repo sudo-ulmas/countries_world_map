@@ -512,39 +512,34 @@ class _SupportedCountriesMapState extends State<SupportedCountriesMap> {
                     color: primaryColor,
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height,
-                    child: GestureDetector(
-                      onTapDown: (d) {
-                        print('hi');
+                    child: SimpleMap(
+                      instructions: SMapWorld.instructions,
+                      defaultColor: Colors.grey.withOpacity(0.44),
+                      callback: (id, name, tapdetails) {
+                        setState(() {
+                          countryName = id;
+                          _stackIndex = 1;
+                        });
+                        // goToCountry(id);
                       },
-                      child: SimpleMap(
-                        instructions: SMapWorld.instructions,
-                        defaultColor: Colors.grey.withOpacity(0.44),
-                        callback: (id, name, tapdetails) {
-                          setState(() {
-                            countryName = id;
-                            _stackIndex = 1;
-                          });
-                          // goToCountry(id);
-                        },
-                        countryBorder: const CountryBorder(color: Colors.grey),
-                        colors: SMapWorldColors(
-                          aT: countryColor,
-                          bD: countryColor,
-                          cY: countryColor,
-                          cN: countryColor,
-                          cZ: countryColor,
-                          nL: countryColor,
-                          aE: countryColor,
-                          uZ: countryColor,
-                        ).toMap(),
-                        coordinates: [],
-                        hitTestCallback: ({
-                          required bool isIconTargeted,
-                          required double lat,
-                          required double lon,
-                        }) {},
-                        zoom: null,
-                      ),
+                      countryBorder: const CountryBorder(color: Colors.grey),
+                      colors: SMapWorldColors(
+                        aT: countryColor,
+                        bD: countryColor,
+                        cY: countryColor,
+                        cN: countryColor,
+                        cZ: countryColor,
+                        nL: countryColor,
+                        aE: countryColor,
+                        uZ: countryColor,
+                      ).toMap(),
+                      coordinates: [],
+                      hitTestCallback: ({
+                        required bool isIconTargeted,
+                        required double lat,
+                        required double lon,
+                      }) {},
+                      zoom: null,
                     ),
                   ),
                 ),
@@ -604,40 +599,40 @@ class _CountryPageState extends State<CountryPage>
   double width = 0;
   double height = 0;
 
-  @override
-  void didUpdateWidget(covariant CountryPage oldWidget) {
-    setState(() {
-      country = widget.country;
-      instruction = getInstructions(country);
-      properties = getProperties(instruction);
-      properties
-          .sort((a, b) => a['name'].toString().compareTo(b['name'].toString()));
-      keyValuesPaires = {};
-      final countryObj =
-          countries.where((element) => element['code'] == country).first;
-      final cities = countryObj['children']! as List;
-      width = countryObj['width'] as double;
-      height = countryObj['height'] as double;
+  // @override
+  // void didUpdateWidget(covariant CountryPage oldWidget) {
+  //   setState(() {
+  //     country = widget.country;
+  //     instruction = getInstructions(country);
+  //     properties = getProperties(instruction);
+  //     properties
+  //         .sort((a, b) => a['name'].toString().compareTo(b['name'].toString()));
+  //     keyValuesPaires = {};
+  //     final countryObj =
+  //         countries.where((element) => element['code'] == country).first;
+  //     final cities = countryObj['children']! as List;
+  //     width = countryObj['width'] as double;
+  //     height = countryObj['height'] as double;
 
-      for (final element in properties) {
-        keyValuesPaires.addAll(
-          {
-            element['id'].toString(): cities
-                    .where(
-                      (e) =>
-                          (e as Map<String, dynamic>)['code'] == element['id'],
-                    )
-                    .isNotEmpty
-                ? Colors.red.withOpacity(0.8)
-                : element['color'] == null
-                    ? const Color(0xffE1B506)
-                    : element['color'] as Color,
-          },
-        );
-      }
-    });
-    super.didUpdateWidget(oldWidget);
-  }
+  //     for (final element in properties) {
+  //       keyValuesPaires.addAll(
+  //         {
+  //           element['id'].toString(): cities
+  //                   .where(
+  //                     (e) =>
+  //                         (e as Map<String, dynamic>)['code'] == element['id'],
+  //                   )
+  //                   .isNotEmpty
+  //               ? Colors.red.withOpacity(0.8)
+  //               : element['color'] == null
+  //                   ? const Color(0xffE1B506)
+  //                   : element['color'] as Color,
+  //         },
+  //       );
+  //     }
+  //   });
+  //   super.didUpdateWidget(oldWidget);
+  // }
 
   void zoom(double lat, double lon) {
     const zoomFactor = 10.0;
@@ -653,8 +648,6 @@ class _CountryPageState extends State<CountryPage>
       mapWidth = screenWidth;
       mapHeight = screenWidth * height / width;
     }
-    print(width);
-    print(height);
     final translateX = -mapWidth * zoomFactor * lat -
         (screenWidth - mapWidth) * zoomFactor / 2 +
         screenWidth / 2;
@@ -680,7 +673,9 @@ class _CountryPageState extends State<CountryPage>
     ));
 
     animation.addListener(() {
-      _countryController.value = animation.value;
+      setState(() {
+        _countryController.value = animation.value;
+      });
     });
 
     animationController.forward();
@@ -741,6 +736,11 @@ class _CountryPageState extends State<CountryPage>
       body: InteractiveViewer(
         maxScale: 75,
         minScale: 1,
+        onInteractionUpdate: (details) {
+          setState(() {
+            print(details.scale);
+          });
+        },
         transformationController: _countryController,
         child: Column(
           children: [
@@ -789,9 +789,10 @@ class _CountryPageState extends State<CountryPage>
                       }
                     }
                   },
-                  zoom: _countryController.value
-                      .getRow(0)
-                      .distanceTo(_countryController.value.getRow(1)),
+                  zoom: _countryController.value.getMaxScaleOnAxis(),
+                  // zoom: _countryController.value
+                  //     .getRow(0)
+                  //     .distanceTo(_countryController.value.getRow(1)),
                 ),
               ),
             ),

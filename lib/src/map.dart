@@ -50,6 +50,7 @@ class SimpleMap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Map map = jsonDecode(instructions);
+    print(zoom);
 
     double width = double.parse(map['w'].toString());
     double height = double.parse(map['h'].toString());
