@@ -305,6 +305,12 @@ class _RandomWorldMapGeneratorState extends State<RandomWorldMapGenerator> {
                         zW: colors[_random.nextInt(8)],
                       ).toMap(),
                       coordinates: [],
+                      hitTestCallback: ({
+                        required bool isIconTargeted,
+                        required double lat,
+                        required double lon,
+                      }) {},
+                      zoom: null,
                     ),
                   ),
                   // Creates 8% from right side so the map looks more centered.

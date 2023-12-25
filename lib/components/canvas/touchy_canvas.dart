@@ -71,4 +71,48 @@ class TouchyCanvas {
           // onSecondaryTapUp: onSecondaryTapUp,
         )));
   }
+
+  void drawCircle(
+    Offset offset,
+    double radius,
+    Paint paint, {
+    HitTestBehavior? hitTestBehavior,
+    // GestureTapDownCallback? onTapDown,
+    // PaintingStyle? paintStyleForTouch,
+    GestureTapCallback? onTap,
+    GestureTapUpCallback? onTapUp,
+    // GestureLongPressStartCallback? onLongPressStart,
+    // GestureLongPressEndCallback? onLongPressEnd,
+    // GestureLongPressMoveUpdateCallback? onLongPressMoveUpdate,
+    // GestureForcePressStartCallback? onForcePressStart,
+    // GestureForcePressEndCallback? onForcePressEnd,
+    // GestureForcePressPeakCallback? onForcePressPeak,
+    // GestureForcePressUpdateCallback? onForcePressUpdate,
+    // GestureDragStartCallback? onPanStart,
+    // GestureDragUpdateCallback? onPanUpdate,
+    // GestureDragDownCallback? onPanDown,
+    // GestureTapDownCallback? onSecondaryTapDown,
+    // GestureTapUpCallback? onSecondaryTapUp,
+  }) {
+    _canvas.drawCircle(offset, radius, paint);
+    _shapeHandler.addShape(CircleShape(offset,
+        paint: paint,
+        hitTestBehavior: hitTestBehavior,
+        gestureMap: TouchCanvasUtil.getGestureCallbackMap(
+          // onTapDown: onTapDown,
+          onTapUp: onTapUp,
+          // onLongPressStart: onLongPressStart,
+          // onLongPressEnd: onLongPressEnd,
+          // onLongPressMoveUpdate: onLongPressMoveUpdate,
+          // onForcePressStart: onForcePressStart,
+          // onForcePressEnd: onForcePressEnd,
+          // onForcePressPeak: onForcePressPeak,
+          // onForcePressUpdate: onForcePressUpdate,
+          // onPanStart: onPanStart,
+          // onPanUpdate: onPanUpdate,
+          // onPanDown: onPanDown,
+          // onSecondaryTapDown: onSecondaryTapDown,
+          // onSecondaryTapUp: onSecondaryTapUp,
+        )));
+  }
 }

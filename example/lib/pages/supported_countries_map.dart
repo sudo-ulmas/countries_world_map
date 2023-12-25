@@ -175,6 +175,12 @@ class _SupportedCountriesMapState extends State<SupportedCountriesMap> {
                       yE: Colors.green,
                     ).toMap(),
                     coordinates: [],
+                    hitTestCallback: ({
+                      required bool isIconTargeted,
+                      required double lat,
+                      required double lon,
+                    }) {},
+                    zoom: null,
                   ),
                 ),
                 // Creates 8% from right side so the map looks more centered.
@@ -279,6 +285,12 @@ class _CountryPageState extends State<CountryPage> {
                         });
                       },
                       coordinates: [],
+                      hitTestCallback: ({
+                        required bool isIconTargeted,
+                        required double lat,
+                        required double lon,
+                      }) {},
+                      zoom: null,
                     ))),
                     if (MediaQuery.of(context).size.width > 800)
                       SizedBox(

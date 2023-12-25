@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import '../components/canvas/touchy_canvas.dart';
 import '../countries_world_map.dart';
 import 'package:path_drawing/path_drawing.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:touchable/touchable.dart' as t;
 
 /// This painter will paint a world map with all///
 /// Giving countries a different color based on a data set can help visualize data.
@@ -21,12 +20,19 @@ class SimpleMapPainter extends CustomPainter {
   final Map? colors;
   final void Function(String id, String name, TapUpDetails tapUpDetails)
       callback;
+  final void Function({
+    required bool isIconTargeted,
+    required double lat,
+    required double lon,
+  }) hitTestCallback;
 
   final CountryBorder? countryBorder;
+  final double zoom;
 
-  const SimpleMapPainter({
+  SimpleMapPainter({
     required this.instructions,
     required this.defaultColor,
+    required this.hitTestCallback,
     this.colors,
     required this.context,
     required this.callback,
@@ -35,13 +41,15 @@ class SimpleMapPainter extends CustomPainter {
     this.endLat = 0,
     this.endLon = 0,
     this.countryBorder,
+    required this.zoom,
     required this.coordinates,
   });
+  List<(Path path, double lat, double lon)> iconPaths = [];
 
   @override
   void paint(Canvas c, Size s) {
     TouchyCanvas canvas = TouchyCanvas(context, c);
-
+    t.TouchyCanvas myCanvas = t.TouchyCanvas(context, c);
     // Get country paths from Json
     // List countryPaths = json.decode(jsonData);
     List<SimpleMapInstruction> countryPathList = <SimpleMapInstruction>[];
@@ -55,30 +63,50 @@ class SimpleMapPainter extends CustomPainter {
     for (int i = 0; i < countryPathList.length; i++) {
       List<String> paths = countryPathList[i].instructions;
       Path path = Path();
-      if (countryPathList[i].name == 'Eriell' ||
-          countryPathList[i].uniqueID == 'UZ-ER') {
+      if (countryPathList[i].name == 'Eriell') {
         Paint paint = Paint()..color = Color(0xff1B3470);
         final String rawSvg = '''
-M14,0 C21.732,0 28,5.641 28,12.6 C28,23.963 14,36 14,36 C14,36 0,24.064 0,12.6 C0,5.641 6.268,0 14,0 Z
+M2.8,0 C4.3464,0 5.6,1.1282 5.6,2.52 C5.6,4.7926 2.8,7.2 2.8,7.2 C2.8,7.2 0,4.8128 0,2.52 C0,1.1282 1.2536,0 2.8,0 Z
 ''';
-        for (var i = 0; i < coordinates.length; i += 1) {
-          final latitude = double.parse(coordinates[i].split(',').first);
-          final longitude = double.parse(coordinates[i].split(',').last);
-          final relativeLat = (latitude - startLat) / (endLat - startLat);
-          final relativeLon = (longitude - startLon) / (endLon - startLon);
-          final Path complexPathToDraw = parseSvgPathData(rawSvg);
-          path.addPath(complexPathToDraw, Offset.zero);
-          c.save();
-          c.translate(
-            s.width * relativeLon,
-            s.height * relativeLat,
-          );
-          c.scale(0.2);
-          // c.translate(0, 0);
-          c.drawPath(complexPathToDraw, paint);
-          c.drawCircle(Offset(14, 14), 7, Paint()..color = Color(0xffE1B506));
-          c.restore();
-        }
+//         final String rawSvg = '''
+// M14,0 C21.732,0 28,5.641 28,12.6 C28,23.963 14,36 14,36 C14,36 0,24.064 0,12.6 C0,5.641 6.268,0 14,0 Z
+// ''';
+        print(zoom);
+
+        final latitude = double.parse(
+            coordinates[int.parse(countryPathList[i].uniqueID)]
+                .split(',')
+                .first);
+        final longitude = double.parse(
+            coordinates[int.parse(countryPathList[i].uniqueID)]
+                .split(',')
+                .last);
+        final relativeLat = (latitude - startLat) / (endLat - startLat);
+        final relativeLon = (longitude - startLon) / (endLon - startLon);
+        final Path complexPathToDraw = parseSvgPathData(rawSvg);
+        path.addPath(
+            complexPathToDraw,
+            Offset(
+              s.width * relativeLon,
+              s.height * relativeLat,
+            ));
+        iconPaths.add((path, relativeLat, relativeLon));
+        print(iconPaths);
+        // path.addPath(complexPathToDraw, Offset.zero);
+        c.save();
+        c.translate(
+          s.width * relativeLon,
+          s.height * relativeLat,
+        );
+        // c.scale(0.2);
+        // c.translate(0, 0);
+        myCanvas.drawPath(complexPathToDraw, paint);
+        myCanvas.drawCircle(
+          Offset(2.8, 2.8),
+          1.4,
+          Paint()..color = Color(0xffE1B506),
+        );
+        c.restore();
       } else {
         for (int j = 0; j < paths.length; j++) {
           String instruction = paths[j];
@@ -116,6 +144,26 @@ M14,0 C21.732,0 28,5.641 28,12.6 C28,23.963 14,36 14,36 C14,36 0,24.064 0,12.6 C
 
       // Read path instructions and start drawing
     }
+  }
+
+  @override
+  bool? hitTest(Offset position) {
+    if (iconPaths.isNotEmpty) {
+      var contains = false;
+      (Path, double, double) path = (iconPaths.first.$1, 0, 0);
+      for (var iconPath in iconPaths) {
+        contains = iconPath.$1.contains(position);
+        path = (iconPath.$1, iconPath.$2, iconPath.$3);
+        if (contains) break;
+      }
+
+      hitTestCallback(
+        isIconTargeted: contains,
+        lat: path.$3,
+        lon: path.$2,
+      );
+    }
+    return false;
   }
 
   @override

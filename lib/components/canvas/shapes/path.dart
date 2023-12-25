@@ -20,3 +20,22 @@ class PathShape extends Shape {
     return path.contains(p);
   }
 }
+
+class CircleShape extends Shape {
+  final Offset path;
+
+  CircleShape(this.path,
+      {required Map<GestureType, Function> gestureMap,
+      required Paint paint,
+      HitTestBehavior? hitTestBehavior,
+      PaintingStyle? paintStyleForTouch})
+      : super(
+            hitTestBehavior: hitTestBehavior,
+            paint: paint,
+            gestureCallbackMap: gestureMap);
+
+  @override
+  bool isInside(Offset p) {
+    return path == p;
+  }
+}

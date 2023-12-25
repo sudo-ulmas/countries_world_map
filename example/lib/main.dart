@@ -34,6 +34,8 @@ final countries = [
     'name': 'Узбекистан',
     'code': 'uz',
     'offices': 2,
+    'width': 792.4873,
+    'height': 516.87848,
     'children': [
       {
         'name': 'Ташкент',
@@ -66,6 +68,8 @@ final countries = [
     'name': 'Китай',
     'code': 'cn',
     'offices': 1,
+    'width': 774.04419,
+    'height': 569.65088,
     'children': [
       {
         'name': 'Пекин',
@@ -83,6 +87,8 @@ final countries = [
     'name': 'Чехия',
     'code': 'cz',
     'offices': 1,
+    'width': 612.45972,
+    'height': 350.61844,
     'children': [
       {
         'name': 'Прага',
@@ -99,6 +105,8 @@ final countries = [
     'name': 'Австрия',
     'code': 'at',
     'offices': 1,
+    'width': 612.93958,
+    'height': 313.54865,
     'children': [
       {
         'name': 'Вена',
@@ -115,6 +123,8 @@ final countries = [
     'name': 'Бангладеш',
     'code': 'bd',
     'offices': 1,
+    'width': 437.80637,
+    'height': 601.16034,
     'children': [
       {
         'name': 'Дакка',
@@ -132,6 +142,8 @@ final countries = [
     'name': 'Кипр',
     'code': 'cy',
     'offices': 1,
+    'width': 607.74274,
+    'height': 360.26913,
     'children': [
       {
         'name': 'Лимасол',
@@ -149,6 +161,8 @@ final countries = [
     'name': 'Нидерланды',
     'code': 'nl',
     'offices': 1,
+    'width': 612.54211,
+    'height': 723.61865,
     'children': [
       {
         'name': 'Амстердам',
@@ -165,6 +179,8 @@ final countries = [
     'name': 'ОАЭ',
     'code': 'ae',
     'offices': 1,
+    'width': 760.1441,
+    'height': 612.53363,
     'children': [
       {
         'name': 'Дубай',
@@ -496,28 +512,39 @@ class _SupportedCountriesMapState extends State<SupportedCountriesMap> {
                     color: primaryColor,
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height,
-                    child: SimpleMap(
-                      instructions: SMapWorld.instructions,
-                      defaultColor: Colors.grey.withOpacity(0.44),
-                      callback: (id, name, tapdetails) {
-                        setState(() {
-                          countryName = id;
-                          _stackIndex = 1;
-                        });
-                        // goToCountry(id);
+                    child: GestureDetector(
+                      onTapDown: (d) {
+                        print('hi');
                       },
-                      countryBorder: const CountryBorder(color: Colors.grey),
-                      colors: SMapWorldColors(
-                        aT: countryColor,
-                        bD: countryColor,
-                        cY: countryColor,
-                        cN: countryColor,
-                        cZ: countryColor,
-                        nL: countryColor,
-                        aE: countryColor,
-                        uZ: countryColor,
-                      ).toMap(),
-                      coordinates: [],
+                      child: SimpleMap(
+                        instructions: SMapWorld.instructions,
+                        defaultColor: Colors.grey.withOpacity(0.44),
+                        callback: (id, name, tapdetails) {
+                          setState(() {
+                            countryName = id;
+                            _stackIndex = 1;
+                          });
+                          // goToCountry(id);
+                        },
+                        countryBorder: const CountryBorder(color: Colors.grey),
+                        colors: SMapWorldColors(
+                          aT: countryColor,
+                          bD: countryColor,
+                          cY: countryColor,
+                          cN: countryColor,
+                          cZ: countryColor,
+                          nL: countryColor,
+                          aE: countryColor,
+                          uZ: countryColor,
+                        ).toMap(),
+                        coordinates: [],
+                        hitTestCallback: ({
+                          required bool isIconTargeted,
+                          required double lat,
+                          required double lon,
+                        }) {},
+                        zoom: null,
+                      ),
                     ),
                   ),
                 ),
@@ -557,7 +584,8 @@ class CountryPage extends StatefulWidget {
   State<CountryPage> createState() => _CountryPageState();
 }
 
-class _CountryPageState extends State<CountryPage> {
+class _CountryPageState extends State<CountryPage>
+    with TickerProviderStateMixin {
   late String state;
   late String instruction;
   String country = '';
@@ -570,6 +598,11 @@ class _CountryPageState extends State<CountryPage> {
       TransformationController();
 
   List<String> coordinates = [];
+  bool isIconHovered = false;
+  double relativeLat = 0;
+  double relativeLon = 0;
+  double width = 0;
+  double height = 0;
 
   @override
   void didUpdateWidget(covariant CountryPage oldWidget) {
@@ -580,9 +613,11 @@ class _CountryPageState extends State<CountryPage> {
       properties
           .sort((a, b) => a['name'].toString().compareTo(b['name'].toString()));
       keyValuesPaires = {};
-      final cities = countries
-          .where((element) => element['code'] == country)
-          .first['children']! as List;
+      final countryObj =
+          countries.where((element) => element['code'] == country).first;
+      final cities = countryObj['children']! as List;
+      width = countryObj['width'] as double;
+      height = countryObj['height'] as double;
 
       for (final element in properties) {
         keyValuesPaires.addAll(
@@ -604,6 +639,53 @@ class _CountryPageState extends State<CountryPage> {
     super.didUpdateWidget(oldWidget);
   }
 
+  void zoom(double lat, double lon) {
+    const zoomFactor = 10.0;
+
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    double mapWidth = 0;
+    double mapHeight = 0;
+    if (screenWidth > screenHeight) {
+      mapHeight = screenHeight;
+      mapWidth = screenHeight * width / height;
+    } else {
+      mapWidth = screenWidth;
+      mapHeight = screenWidth * height / width;
+    }
+    print(width);
+    print(height);
+    final translateX = -mapWidth * zoomFactor * lat -
+        (screenWidth - mapWidth) * zoomFactor / 2 +
+        screenWidth / 2;
+    final translateY = -mapHeight * zoomFactor * lon -
+        (screenHeight - mapHeight) * zoomFactor / 2 +
+        screenHeight / 2;
+    Matrix4 beginTransform = _countryController.value;
+    Matrix4 endTransform = Matrix4.identity()
+      ..translate(translateX, translateY)
+      ..scale(zoomFactor);
+
+    AnimationController animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 500),
+    );
+
+    Animation<Matrix4> animation = Matrix4Tween(
+      begin: beginTransform,
+      end: endTransform,
+    ).animate(CurvedAnimation(
+      parent: animationController,
+      curve: Curves.easeInOut,
+    ));
+
+    animation.addListener(() {
+      _countryController.value = animation.value;
+    });
+
+    animationController.forward();
+  }
+
   @override
   void initState() {
     country = widget.country;
@@ -612,10 +694,11 @@ class _CountryPageState extends State<CountryPage> {
     properties
         .sort((a, b) => a['name'].toString().compareTo(b['name'].toString()));
     keyValuesPaires = {};
-
-    final cities = countries
-        .where((element) => element['code'] == country)
-        .first['children']! as List;
+    final countryObj =
+        countries.where((element) => element['code'] == country).first;
+    final cities = countryObj['children']! as List;
+    width = countryObj['width'] as double;
+    height = countryObj['height'] as double;
     coordinates = cities
         .where((element) => element['lat'] != null)
         .map((e) => '${e['lat']},${e['lon']}')
@@ -661,31 +744,55 @@ class _CountryPageState extends State<CountryPage> {
         transformationController: _countryController,
         child: Column(
           children: [
-            Container(
-              color: primaryColor,
-              height: MediaQuery.of(context).size.height,
-              width: double.infinity,
-              child: SimpleMap(
-                defaultColor: primaryColor,
-                key: Key(properties.toString()),
-                colors: keyValuesPaires,
-                instructions: instruction,
-                callback: (id, name, tapDetails) {
-                  setState(() {
-                    state = name;
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTapDown: (details) {
+                if (isIconHovered) {
+                  zoom(relativeLat, relativeLon);
+                }
+              },
+              child: Container(
+                color: primaryColor,
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: SimpleMap(
+                  defaultColor: primaryColor,
+                  key: Key(properties.toString()),
+                  colors: keyValuesPaires,
+                  instructions: instruction,
+                  callback: (id, name, tapDetails) {
+                    setState(() {
+                      state = name;
 
-                    final i =
-                        properties.indexWhere((element) => element['id'] == id);
+                      final i = properties
+                          .indexWhere((element) => element['id'] == id);
 
-                    properties[i]['color'] =
-                        properties[i]['color'] == Colors.green
-                            ? null
-                            : Colors.green;
-                    keyValuesPaires[properties[i]['id'] as String] =
-                        properties[i]['color'] as Color;
-                  });
-                },
-                coordinates: coordinates,
+                      properties[i]['color'] =
+                          properties[i]['color'] == Colors.green
+                              ? null
+                              : Colors.green;
+                      keyValuesPaires[properties[i]['id'] as String] =
+                          properties[i]['color'] as Color;
+                    });
+                  },
+                  coordinates: coordinates,
+                  hitTestCallback: ({
+                    required bool isIconTargeted,
+                    required double lat,
+                    required double lon,
+                  }) {
+                    if (isIconHovered != isIconTargeted) {
+                      isIconHovered = isIconTargeted;
+                      if (isIconHovered) {
+                        relativeLat = lat;
+                        relativeLon = lon;
+                      }
+                    }
+                  },
+                  zoom: _countryController.value
+                      .getRow(0)
+                      .distanceTo(_countryController.value.getRow(1)),
+                ),
               ),
             ),
           ],

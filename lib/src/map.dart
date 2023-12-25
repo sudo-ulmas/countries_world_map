@@ -9,6 +9,11 @@ import 'painter.dart';
 class SimpleMap extends StatelessWidget {
   final String instructions;
   final List<String> coordinates;
+  final void Function({
+    required bool isIconTargeted,
+    required double lat,
+    required double lon,
+  }) hitTestCallback;
 
   final CountryBorder? countryBorder;
 
@@ -27,6 +32,7 @@ class SimpleMap extends StatelessWidget {
   /// This is the BoxFit that will be used to fit the map in the available space.
   /// If not provided the default BoxFit will be BoxFit.contain.
   final BoxFit? fit;
+  final double? zoom;
 
   const SimpleMap({
     required this.instructions,
@@ -37,6 +43,8 @@ class SimpleMap extends StatelessWidget {
     this.countryBorder,
     Key? key,
     required this.coordinates,
+    required this.hitTestCallback,
+    required this.zoom,
   }) : super(key: key);
 
   @override
@@ -90,6 +98,8 @@ class SimpleMap extends StatelessWidget {
             startLon: startLon,
             endLat: endLat,
             endLon: endLon,
+            hitTestCallback: hitTestCallback,
+            zoom: zoom ?? 1,
           ),
         ),
       )),
