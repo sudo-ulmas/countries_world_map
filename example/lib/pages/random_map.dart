@@ -48,9 +48,7 @@ class _RandomWorldMapGeneratorState extends State<RandomWorldMapGenerator> {
                     child: SimpleMap(
                       countryBorder: CountryBorder(color: Colors.white),
                       instructions: SMapWorld.instructionsMercator,
-                      callback: (id, name, tabDetails) {
-                        print(id + name);
-                      },
+                      callback: (id, name, tabDetails) {},
                       colors: SMapWorldColors(
                         aD: colors[_random.nextInt(8)],
                         aE: colors[_random.nextInt(8)],

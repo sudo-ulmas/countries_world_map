@@ -75,7 +75,6 @@ M2.8,0 C4.3464,0 5.6,1.1282 5.6,2.52 C5.6,4.7926 2.8,7.2 2.8,7.2 C2.8,7.2 0,4.81
         //     final String rawSvg = '''
         //   M${1 / zoom * 14},0 C${1 / zoom * 21.732},0 ${1 / zoom * 28},5.641 ${1 / zoom * 28},${1 / zoom * 12.6} C${1 / zoom * 28},${1 / zoom * 23.963} ${1 / zoom * 14},${1 / zoom * 36} ${1 / zoom * 14},${1 / zoom * 36} C${1 / zoom * 14},${1 / zoom * 36} ${1 / zoom * 0},${1 / zoom * 24.064} ${1 / zoom * 0},${1 / zoom * 12.6} C${1 / zoom * 0},${1 / zoom * 5.641} ${1 / zoom * 6.268},0 ${1 / zoom * 14},0 Z
         // ''';
-        print('zoom $zoom');
 
         final latitude = double.parse(
             coordinates[int.parse(countryPathList[i].uniqueID)]
@@ -96,7 +95,6 @@ M2.8,0 C4.3464,0 5.6,1.1282 5.6,2.52 C5.6,4.7926 2.8,7.2 2.8,7.2 C2.8,7.2 0,4.81
             ));
         iconPaths
             .add((path, relativeLat, relativeLon, countryPathList[i].uniqueID));
-        print(iconPaths);
         // path.addPath(complexPathToDraw, Offset.zero);
         c.save();
         c.translate(

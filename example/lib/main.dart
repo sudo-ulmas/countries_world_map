@@ -739,9 +739,7 @@ class _CountryPageState extends State<CountryPage>
         maxScale: 75,
         minScale: 1,
         onInteractionUpdate: (details) {
-          setState(() {
-            print(details.scale);
-          });
+          setState(() {});
         },
         transformationController: _countryController,
         child: Column(
