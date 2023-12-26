@@ -64,7 +64,7 @@ class SimpleMapPainter extends CustomPainter {
     for (int i = 0; i < countryPathList.length; i++) {
       List<String> paths = countryPathList[i].instructions;
       Path path = Path();
-      if (countryPathList[i].name == 'Eriell') {
+      if (countryPathList[i].name.contains('Eriell')) {
         Paint paint = Paint()..color = Color(0xff1B3470);
         final String rawSvg = '''
 M2.8,0 C4.3464,0 5.6,1.1282 5.6,2.52 C5.6,4.7926 2.8,7.2 2.8,7.2 C2.8,7.2 0,4.8128 0,2.52 C0,1.1282 1.2536,0 2.8,0 Z
@@ -93,8 +93,12 @@ M2.8,0 C4.3464,0 5.6,1.1282 5.6,2.52 C5.6,4.7926 2.8,7.2 2.8,7.2 C2.8,7.2 0,4.81
               s.width * relativeLon,
               s.height * relativeLat,
             ));
-        iconPaths
-            .add((path, relativeLat, relativeLon, countryPathList[i].uniqueID));
+        iconPaths.add((
+          path,
+          relativeLat,
+          relativeLon,
+          countryPathList[i].name.split(' ').last,
+        ));
         // path.addPath(complexPathToDraw, Offset.zero);
         c.save();
         c.translate(
