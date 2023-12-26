@@ -538,6 +538,7 @@ class _SupportedCountriesMapState extends State<SupportedCountriesMap> {
                         required bool isIconTargeted,
                         required double lat,
                         required double lon,
+                        required String cityId,
                       }) {},
                       zoom: null,
                     ),
@@ -598,6 +599,7 @@ class _CountryPageState extends State<CountryPage>
   double relativeLon = 0;
   double width = 0;
   double height = 0;
+  String cityId = '';
 
   // @override
   // void didUpdateWidget(covariant CountryPage oldWidget) {
@@ -780,12 +782,14 @@ class _CountryPageState extends State<CountryPage>
                     required bool isIconTargeted,
                     required double lat,
                     required double lon,
+                    required String cityId,
                   }) {
                     if (isIconHovered != isIconTargeted) {
                       isIconHovered = isIconTargeted;
                       if (isIconHovered) {
                         relativeLat = lat;
                         relativeLon = lon;
+                        cityId = cityId;
                       }
                     }
                   },

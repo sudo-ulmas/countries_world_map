@@ -24,6 +24,7 @@ class SimpleMapPainter extends CustomPainter {
     required bool isIconTargeted,
     required double lat,
     required double lon,
+    required String cityId,
   }) hitTestCallback;
 
   final CountryBorder? countryBorder;
@@ -44,7 +45,7 @@ class SimpleMapPainter extends CustomPainter {
     required this.zoom,
     required this.coordinates,
   });
-  List<(Path path, double lat, double lon)> iconPaths = [];
+  List<(Path path, double lat, double lon, String cityId)> iconPaths = [];
 
   @override
   void paint(Canvas c, Size s) {
@@ -93,7 +94,8 @@ M2.8,0 C4.3464,0 5.6,1.1282 5.6,2.52 C5.6,4.7926 2.8,7.2 2.8,7.2 C2.8,7.2 0,4.81
               s.width * relativeLon,
               s.height * relativeLat,
             ));
-        iconPaths.add((path, relativeLat, relativeLon));
+        iconPaths
+            .add((path, relativeLat, relativeLon, countryPathList[i].uniqueID));
         print(iconPaths);
         // path.addPath(complexPathToDraw, Offset.zero);
         c.save();
@@ -153,10 +155,11 @@ M2.8,0 C4.3464,0 5.6,1.1282 5.6,2.52 C5.6,4.7926 2.8,7.2 2.8,7.2 C2.8,7.2 0,4.81
   bool? hitTest(Offset position) {
     if (iconPaths.isNotEmpty) {
       var contains = false;
-      (Path, double, double) path = (iconPaths.first.$1, 0, 0);
+      (Path, double, double, String) path =
+          (iconPaths.first.$1, 0, 0, iconPaths.first.$4);
       for (var iconPath in iconPaths) {
         contains = iconPath.$1.contains(position);
-        path = (iconPath.$1, iconPath.$2, iconPath.$3);
+        path = (iconPath.$1, iconPath.$2, iconPath.$3, iconPath.$4);
         if (contains) break;
       }
 
@@ -164,6 +167,7 @@ M2.8,0 C4.3464,0 5.6,1.1282 5.6,2.52 C5.6,4.7926 2.8,7.2 2.8,7.2 C2.8,7.2 0,4.81
         isIconTargeted: contains,
         lat: path.$3,
         lon: path.$2,
+        cityId: path.$4,
       );
     }
     return false;

@@ -13,6 +13,7 @@ class SimpleMap extends StatelessWidget {
     required bool isIconTargeted,
     required double lat,
     required double lon,
+    required String cityId,
   }) hitTestCallback;
 
   final CountryBorder? countryBorder;

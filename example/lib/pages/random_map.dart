@@ -309,6 +309,7 @@ class _RandomWorldMapGeneratorState extends State<RandomWorldMapGenerator> {
                         required bool isIconTargeted,
                         required double lat,
                         required double lon,
+                        required String cityId,
                       }) {},
                       zoom: null,
                     ),
